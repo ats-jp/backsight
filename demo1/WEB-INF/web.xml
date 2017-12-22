@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<display-name>demo1</display-name>
+
+	<filter>
+		<filter-name>exceptionForwardFilter</filter-name>
+		<filter-class>jp.ats.webkit.util.ExceptionForwardFilter</filter-class>
+		<init-param>
+			<param-name>jp.ats.backsight.server.AccessDeniedException</param-name>
+			<param-value>/accessDeniedException.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>jp.ats.backsight.server.InvalidSessionException</param-name>
+			<param-value>/invalidSessionException.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>jp.ats.backsight.server.DuplicateRequestException</param-name>
+			<param-value>/duplicateRequestException.jsp</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>exceptionForwardFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>exceptionForwardFilter</filter-name>
+		<url-pattern>*.html</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>backsightManager</filter-name>
+		<filter-class>jp.ats.backsight.server.BacksightManager</filter-class>
+		<init-param>
+			<param-name>backsight-host</param-name>
+			<param-value>localhost</param-value>
+		</init-param>
+		<init-param>
+			<param-name>use-accesscontrol</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>accesscontrol-server-port</param-name>
+			<param-value>25671</param-value>
+		</init-param>
+		<init-param>
+			<param-name>default-administrator-names</param-name>
+			<param-value>admin</param-value>
+		</init-param>
+		<init-param>
+			<param-name>default-concurrentsession-count</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<init-param>
+			<param-name>default-concurrentrequest-count</param-name>
+			<param-value>5</param-value>
+		</init-param>
+		<init-param>
+			<param-name>default-sessiontimeout-minutes</param-name>
+			<param-value>5</param-value>
+		</init-param>
+		<init-param>
+			<param-name>oneuser-session-count</param-name>
+			<param-value>1</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>backsightManager</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>backsightManager</filter-name>
+		<url-pattern>*.html</url-pattern>
+	</filter-mapping>
+
+	<listener>
+		<listener-class>jp.ats.backsight.server.BacksightManager</listener-class>
+	</listener>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>UserAuth</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-role>
+		<role-name>admin</role-name>
+		<role-name>user</role-name>
+	</security-role>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>UserAuth</realm-name>
+		<form-login-config>
+			<form-login-page>/login.html</form-login-page>
+			<form-error-page>/login.html</form-error-page>
+		</form-login-config>
+	</login-config>
+</web-app>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="backsight" default="server-jar">
+
+	<property name="webapp" value="webapp" />
+	<property name="WEB-INF" value="${webapp}/WEB-INF" />
+	<property name="lib" value="${WEB-INF}/lib" />
+	<property name="webkit" value="../webkit" />
+	<property name="webkit-webapp" value="${webkit}/webapp" />
+	<property name="webkit-WEB-INF" value="${webkit-webapp}/WEB-INF" />
+	<property name="webkit-lib" value="${webkit-WEB-INF}/lib" />
+	<property name="demo1-lib" value="demo1/WEB-INF/lib" />
+	<property name="demo2-lib" value="demo2/WEB-INF/lib" />
+
+	<path id="project.classpath">
+		<pathelement location="dependencies/servlet-api.jar" />
+		<pathelement location="dependencies/jsp-api.jar" />
+		<pathelement location="dependencies/mail.jar" />
+		<pathelement location="${lib}/substrate.jar" />
+		<pathelement location="${lib}/webkit.jar" />
+	</path>
+
+	<target name="client-jar" depends="cleanup, import, compile">
+		<copy todir="build">
+			<fileset dir="src" includes="**/*.java" />
+		</copy>
+		<jar basedir="build" jarfile="${lib}/backsight.jar" excludes="**/server/AccessController*.*" />
+	</target>
+
+	<target name="server-jar" depends="cleanup, import, compile">
+		<copy todir="build">
+			<fileset dir="src" includes="**/*.java" />
+		</copy>
+		<jar basedir="build" jarfile="backsight.jar" excludes="**/client/**/*.* **/server/AccessController*.*" />
+	</target>
+
+	<target name="ac-jar" depends="cleanup, import, compile">
+		<jar basedir="build" jarfile="backsight-ac.jar" includes="**/server/AccessController*.class" />
+	</target>
+
+	<!--
+	substrate.jar と webkit.jar を生成し、使用可能なようにインポートします。
+	-->
+	<target name="import">
+		<ant dir="${webkit}" inheritAll="false" />
+		<copy file="${webkit-lib}/substrate.jar" todir="${lib}" />
+		<copy file="${webkit}/webkit.jar" todir="${lib}" />
+		<copy file="${webkit-lib}/commons-beanutils.jar" todir="${lib}" />
+		<copy file="${webkit-lib}/commons-logging.jar" todir="${lib}" />
+		<copy file="dependencies/mail.jar" todir="${lib}" />
+		<copy file="dependencies/activation.jar" todir="${lib}" />
+		<copy file="${webkit-WEB-INF}/webkit.tld" todir="${WEB-INF}" />
+		<copy todir="${webapp}/js">
+			<fileset dir="${webkit-webapp}/js" />
+		</copy>
+		<copy file="${webkit-webapp}/dexter/dexter.css" todir="${webapp}" />
+	</target>
+
+	<target name="war" depends="client-jar">
+		<delete dir="${WEB-INF}/classes" />
+		<war warfile="backsight.war" webxml="${WEB-INF}/web.xml" basedir="${webapp}" />
+	</target>
+
+	<target name="demo-war" depends="server-jar">
+		<copy file="${webkit-lib}/substrate.jar" todir="${demo1-lib}" />
+		<copy file="${lib}/webkit.jar" todir="${demo1-lib}" />
+		<copy file="backsight.jar" todir="${demo1-lib}" />
+		<copy todir="demo1">
+			<fileset dir="demo" />
+		</copy>
+		<war warfile="demo1.war" webxml="demo1/WEB-INF/web.xml" basedir="demo1" />
+
+		<copy file="${webkit-lib}/substrate.jar" todir="${demo2-lib}" />
+		<copy file="${lib}/webkit.jar" todir="${demo2-lib}" />
+		<copy file="backsight.jar" todir="${demo2-lib}" />
+		<copy todir="demo2">
+			<fileset dir="demo" />
+		</copy>
+		<war warfile="demo2.war" webxml="demo2/WEB-INF/web.xml" basedir="demo2" />
+	</target>
+
+	<target name="javadoc" depends="cleanup, import">
+		<ant dir="${webkit}" target="javadoc" />
+		<mkdir dir="substrate-api" />
+		<copy todir="substrate-api">
+			<fileset dir="${webkit}/substrate-api" />
+		</copy>
+		<mkdir dir="webkit-api" />
+		<copy todir="webkit-api">
+			<fileset dir="${webkit}/webkit-api" />
+		</copy>
+
+		<mkdir dir="backsight-api" />
+
+		<javadoc packagenames="jp.ats.backsight.*" sourcepath="src" destdir="backsight-api" windowtitle="Backsight API" doctitle="Backsight API">
+			<classpath refid="project.classpath" />
+			<link offline="true" href="http://java.sun.com/j2se/1.5.0/ja/docs/ja/api/" packagelistLoc="." />
+			<link href="../substrate-api" packagelistLoc="." />
+			<link href="../webkit-api" packagelistLoc="." />
+		</javadoc>
+		<zip zipfile="backsight-api.zip" basedir="backsight-api" />
+	</target>
+
+	<target name="cleanup">
+		<delete dir="build" />
+		<delete dir="backsight-api" />
+		<delete dir="substrate-api" />
+		<delete dir="liverwort-api" />
+		<delete dir="webkit-api" />
+		<delete dir="${webapp}/js" />
+		<delete dir="${lib}" />
+		<delete dir="${demo1-lib}" />
+		<delete dir="${demo2-lib}" />
+		<delete file="backsight.jar" />
+		<delete file="backsight-ac.jar" />
+		<delete file="backsight-api.zip" />
+		<delete file="backsight.war" />
+		<delete>
+			<fileset dir="demo1" includes="*.*"/>
+			<fileset dir="demo2" includes="*.*"/>
+		</delete>
+		<delete file="demo1.war" />
+		<delete file="demo2.war" />
+		<delete file="${WEB-INF}/webkit.tld" />
+		<delete dir="jspwork/org" />
+	</target>
+
+	<!-- 全てのjspのプリコンパイルを行う -->
+	<!-- 実行には -Dtomcat="Tomcat6のインストールディレクトリ" パラメータが必要 -->
+	<target name="jspc">
+		<taskdef classname="org.apache.jasper.JspC" name="jasper">
+			<classpath>
+				<pathelement location="${java.home}/../lib/tools.jar" />
+				<fileset dir="${tomcat}/lib">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${tomcat}/bin">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</taskdef>
+
+		<delete dir="jspwork/org" />
+
+		<jasper uriroot="webapp" outputDir="jspwork" />
+	</target>
+
+	<target name="compile">
+		<mkdir dir="build" />
+		<javac srcdir="src" destdir="build" debug="true" optimize="true" deprecation="true" encoding="Windows-31J">
+			<classpath refid="project.classpath" />
+			<include name="**/*.java" />
+		</javac>
+		<copy file="src/backsight-version.txt" todir="build" />
+	</target>
+</project>

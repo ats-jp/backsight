@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<display-name>backsight</display-name>
+
+	<context-param>
+		<param-name>dexter-formresolver-class</param-name>
+		<param-value>jp.ats.webkit.dexter.ConcreteFormResolver</param-value>
+	</context-param>
+	<context-param>
+		<param-name>dexter-developmode</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<context-param>
+		<param-name>dexter-developmode-rootpath</param-name>
+		<param-value></param-value>
+	</context-param>
+	<context-param>
+		<param-name>dexter-rootpath</param-name>
+		<param-value></param-value>
+	</context-param>
+	<context-param>
+		<param-name>dexter-suffix</param-name>
+		<param-value>xml</param-value>
+	</context-param>
+
+	<servlet>
+		<servlet-name>dexterServlet</servlet-name>
+		<servlet-class>jp.ats.webkit.dexter.DexterServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dexterServlet</servlet-name>
+		<url-pattern>/dexter</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>graphServletForSession</servlet-name>
+		<servlet-class>jp.ats.backsight.client.GraphServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+		<init-param>
+			<param-name>threshold</param-name>
+			<param-value>75</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>graphServletForSession</servlet-name>
+		<url-pattern>/sessiongraph/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>graphServletForRequest</servlet-name>
+		<servlet-class>jp.ats.backsight.client.GraphServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+		<init-param>
+			<param-name>threshold</param-name>
+			<param-value>100</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>graphServletForRequest</servlet-name>
+		<url-pattern>/requestgraph/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>currentSessionCountServlet</servlet-name>
+		<servlet-class>jp.ats.backsight.client.CurrentSessionCountServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>currentSessionCountServlet</servlet-name>
+		<url-pattern>/sessionCount</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>currentRequestCountServlet</servlet-name>
+		<servlet-class>jp.ats.backsight.client.CurrentRequestCountServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>currentRequestCountServlet</servlet-name>
+		<url-pattern>/requestCount</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>exceptionForwardFilter</filter-name>
+		<filter-class>jp.ats.webkit.util.ExceptionForwardFilter</filter-class>
+		<init-param>
+			<param-name>jp.ats.backsight.client.ApplicationException</param-name>
+			<param-value>/applicationException.jsp</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>exceptionForwardFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>exceptionForwardFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>backsightManager</filter-name>
+		<filter-class>jp.ats.backsight.server.BacksightManager</filter-class>
+		<init-param>
+			<param-name>backsight-host</param-name>
+			<param-value>localhost</param-value>
+		</init-param>
+		<init-param>
+			<param-name>use-accesscontrol</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>default-concurrentsession-count</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<init-param>
+			<param-name>default-concurrentrequest-count</param-name>
+			<param-value>3</param-value>
+		</init-param>
+		<init-param>
+			<param-name>default-sessiontimeout-minutes</param-name>
+			<param-value>10</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>backsightManager</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>dexterFilter</filter-name>
+		<filter-class>jp.ats.webkit.dexter.DexterFilter</filter-class>
+		<init-param>
+			<param-name>forward-page</param-name>
+			<param-value>error.jsp</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>dexterFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>dexterFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>backsightFilter</filter-name>
+		<filter-class>jp.ats.backsight.client.BacksightFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>backsightFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>backsightFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+
+	<listener>
+		<listener-class>jp.ats.backsight.server.BacksightManager</listener-class>
+	</listener>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/exception.jsp</location>
+	</error-page>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>backsightAuth</web-resource-name>
+			<url-pattern>*.jsp</url-pattern>
+			<url-pattern>*.do</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+			<role-name>manager</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-role>
+		<role-name>admin</role-name>
+		<role-name>manager</role-name>
+	</security-role>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>backsightAuth</realm-name>
+		<form-login-config>
+			<form-login-page>/login.jsp</form-login-page>
+			<form-error-page>/login.jsp</form-error-page>
+		</form-login-config>
+	</login-config>
+</web-app>

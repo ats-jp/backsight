@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/" kind="src" path="src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="jspwork" path="jspwork"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/substrate"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webkit"/>
+	<classpathentry kind="lib" path="dependencies/annotations-api.jar"/>
+	<classpathentry kind="lib" path="dependencies/el-api.jar"/>
+	<classpathentry kind="lib" path="dependencies/jasper.jar"/>
+	<classpathentry kind="lib" path="dependencies/jsp-api.jar"/>
+	<classpathentry kind="lib" path="dependencies/servlet-api.jar"/>
+	<classpathentry kind="lib" path="dependencies/activation.jar"/>
+	<classpathentry kind="lib" path="dependencies/mail.jar"/>
+	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
+</classpath>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<backsight>
+	<site address="localhost">
+		<context
+			name="target1"
+			administrator-names=""
+			concurrent-session-count="0"
+			concurrent-request-count="0"
+			session-timeout-minutes="0" />
+	</site>
+</backsight>

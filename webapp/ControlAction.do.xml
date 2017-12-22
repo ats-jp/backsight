@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dexter-form-config fixed="true">
+<element id="concurrentSessionCount" required="true" pattern="false">
+<name>同時接続セッション数</name>
+<description>同時接続セッション数</description>
+<validators>
+<validator class="jp.ats.webkit.dexter.validator.RegexValidator">
+<param property="regex" value="\d+" />
+<param property="name" value="半角数字検査" />
+<param property="description" value="半角の数字であるかを検査します" />
+<param property="validationMessage" value="半角の数字しか入力できません" />
+</validator>
+</validators>
+</element>
+
+<element id="concurrentRequestCount" required="true" pattern="false">
+<name>同時実行リクエスト数</name>
+<description>同時実行リクエスト数</description>
+<validators>
+<validator class="jp.ats.webkit.dexter.validator.RegexValidator">
+<param property="regex" value="\d+" />
+<param property="name" value="半角数字検査" />
+<param property="description" value="半角の数字であるかを検査します" />
+<param property="validationMessage" value="半角の数字しか入力できません" />
+</validator>
+</validators>
+</element>
+
+<element id="sessionTimeoutMinutes" required="true" pattern="false">
+<name>セッションタイムアウト時間</name>
+<description>セッションタイムアウト時間</description>
+<validators>
+<validator class="jp.ats.webkit.dexter.validator.RegexValidator">
+<param property="regex" value="\d+" />
+<param property="name" value="半角数字検査" />
+<param property="description" value="半角の数字であるかを検査します" />
+<param property="validationMessage" value="半角の数字しか入力できません" />
+</validator>
+</validators>
+</element>
+</dexter-form-config>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dexter-form-config fixed="true">
+<element id="site" required="true" pattern="false">
+<name>サイト名</name>
+<description>監視対象Webアプリケーションのサイト名</description>
+<validators>
+<validator class="jp.ats.webkit.dexter.validator.RegexValidator">
+<param property="regex" value="[\w\._-]+" />
+<param property="name" value="サイト名検査" />
+<param property="description" value="使用できない文字があるかを検査します" />
+<param property="validationMessage" value="使用できない文字が含まれています" />
+</validator>
+</validators>
+</element>
+
+<element id="context" required="true" pattern="false">
+<name>アプリケーション名</name>
+<description>監視対象Webアプリケーション名</description>
+<validators>
+<validator class="jp.ats.webkit.dexter.validator.RegexValidator">
+<param property="regex" value="[\w_-]+" />
+<param property="name" value="半角英数検査" />
+<param property="description" value="半角英数であるかを検査します" />
+<param property="validationMessage" value="半角英数ではありません" />
+</validator>
+</validators>
+</element>
+</dexter-form-config>

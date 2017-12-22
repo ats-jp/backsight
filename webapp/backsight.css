@@ -1,0 +1,70 @@
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #eeeeee;
+}
+
+#banner {
+	padding: 0px;
+	margin: 0px;
+	height: 50px;
+	background-color: #B22222;
+}
+
+#logo {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	color: white;
+	font-size: 27px;
+	font-weight: bold;
+	font-family: Helvetica;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#logout {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	color: white;
+	font-size: 15px;
+	font-weight: bold;
+	font-family: Helvetica;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#currentContextArea {
+	padding: 0px;
+	margin: 0px;
+	height: 20px;
+	background-color: #bbbbbb;
+}
+
+#currentContext {
+	position: relative;
+	left: 20px;
+	font-size: 15px;
+	font-weight: bold;
+	font-family: Helvetica;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#content {
+	padding: 5px;
+	margin: 0px;
+}
+
+TH.sessionInfo {
+	background-color: #cccccc;
+}
+
+TD.sessionInfo {
+	background-color: #ffffff;
+}
+
+#copyright {
+	color: #888888;
+}
