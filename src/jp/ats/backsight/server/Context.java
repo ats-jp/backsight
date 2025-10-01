@@ -22,11 +22,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpSession;
-
+import jakarta.servlet.http.HttpSession;
+import jp.ats.backsight.Mail;
 import jp.ats.backsight.SessionInfo;
 import jp.ats.substrate.util.CollectionMap;
-import jp.ats.webkit.util.Mail;
 
 class Context {
 
@@ -102,9 +101,9 @@ class Context {
 		}
 	}
 
-	//Tomcat‚Ìsession fixation‘Îô‚ÅAƒZƒbƒVƒ‡ƒ“ID‚ªØ‚è‘Ö‚í‚éd—l‚É‘Î‰
+	//Tomcatã®session fixationå¯¾ç­–ã§ã€ã‚»ãƒƒã‚·ãƒ§ãƒ³IDãŒåˆ‡ã‚Šæ›¿ã‚ã‚‹ä»•æ§˜ã«å¯¾å¿œ
 	String adjustSessionID(HttpSession session) {
-		//ƒZƒbƒVƒ‡ƒ“IDØ‚è‘Ö‚¦ˆ—‘S‘Ì‚ğƒƒbƒN‚·‚é‚½‚ßAƒƒbƒN‚ğsessions‚Ås‚¤
+		//ã‚»ãƒƒã‚·ãƒ§ãƒ³IDåˆ‡ã‚Šæ›¿ãˆå‡¦ç†å…¨ä½“ã‚’ãƒ­ãƒƒã‚¯ã™ã‚‹ãŸã‚ã€ãƒ­ãƒƒã‚¯ã‚’sessionsã§è¡Œã†
 		synchronized (sessions) {
 			String originalSessionID = (String) session.getAttribute(originalSessionIDKey);
 			String currentSessionID = session.getId();
@@ -150,9 +149,9 @@ class Context {
 		String user,
 		String sessionID,
 		int sessionCount) {
-		//ƒƒOƒCƒ“‘O‚ÉƒAƒNƒZƒX‚³‚ê‚½ê‡A‚±‚±‚Å‚Í‚¶‚©‚È‚¢‚Æ
-		//“¯‚¶ƒZƒbƒVƒ‡ƒ“‚Å¡“x‚ÍƒƒOƒCƒ“‚³‚ê‚½ê‡Aƒ†[ƒU[‚È‚µ‚Æ‚ ‚è‚Å
-		//“¯‚¶ƒZƒbƒVƒ‡ƒ“‚ª‘¶İ‚·‚é‚±‚Æ‚É‚È‚Á‚Ä‚µ‚Ü‚¤
+		//ãƒ­ã‚°ã‚¤ãƒ³å‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã•ã‚ŒãŸå ´åˆã€ã“ã“ã§ã¯ã˜ã‹ãªã„ã¨
+		//åŒã˜ã‚»ãƒƒã‚·ãƒ§ãƒ³ã§ä»Šåº¦ã¯ãƒ­ã‚°ã‚¤ãƒ³ã•ã‚ŒãŸå ´åˆã€ãƒ¦ãƒ¼ã‚¶ãƒ¼ãªã—ã¨ã‚ã‚Šã§
+		//åŒã˜ã‚»ãƒƒã‚·ãƒ§ãƒ³ãŒå­˜åœ¨ã™ã‚‹ã“ã¨ã«ãªã£ã¦ã—ã¾ã†
 		if (!isAvailable(user)) return false;
 		synchronized (userSessionCountChecker) {
 			Set<String> sessions = (Set<String>) userSessionCountChecker.get(user);

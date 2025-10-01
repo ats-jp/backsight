@@ -27,27 +27,27 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 import jp.ats.backsight.Common;
+import jp.ats.backsight.Mail;
 import jp.ats.backsight.SessionInfo;
 import jp.ats.backsight.ThreadInfo;
 import jp.ats.substrate.U;
-import jp.ats.webkit.util.Mail;
 
 public class BacksightManager implements HttpSessionListener, Filter {
 
-	//‚±‚ÌƒNƒ‰ƒX‚ª•¡”ƒRƒ“ƒeƒLƒXƒg‚Å‹¤—p‚³‚ê‚éê‡‚É”õ‚¦‚Ä•¡”•Û‚Å‚«‚é‚æ‚¤‚É‚·‚é
+	//ã“ã®ã‚¯ãƒ©ã‚¹ãŒè¤‡æ•°ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã§å…±ç”¨ã•ã‚Œã‚‹å ´åˆã«å‚™ãˆã¦è¤‡æ•°ä¿æŒã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
 	private static final Map<String, Context> contexts = newHashMap();
 
 	private static final Map<Thread, String> requestInfo = newHashMap();
@@ -167,23 +167,23 @@ public class BacksightManager implements HttpSessionListener, Filter {
 	public void init(FilterConfig config) throws ServletException {
 		String host = config.getInitParameter("backsight-host");
 		if (!isAvailable(host)) throw new IllegalArgumentException(
-			"backsight-host ‚Í•K{‚Å‚·");
+			"backsight-host ã¯å¿…é ˆã§ã™");
 
 		String contextName = config.getInitParameter("name");
 		if (contextName == null) contextName = config.getServletContext()
 			.getServletContextName();
 		if (!isAvailable(contextName)) throw new IllegalArgumentException(
-			"filter/init-param/param-name ‚ª name ‚Ì‚à‚ÌA‚Ü‚½‚Í context-param/display-name ‚Ì‚Ç‚¿‚ç‚©‚ª•K—v‚Å‚·");
+			"filter/init-param/param-name ãŒ name ã®ã‚‚ã®ã€ã¾ãŸã¯ context-param/display-name ã®ã©ã¡ã‚‰ã‹ãŒå¿…è¦ã§ã™");
 
 		BacksightControllerImpl controller = null;
 		synchronized (BacksightManager.class) {
-			//•¡”ƒRƒ“ƒeƒLƒXƒg‚ÅBacksightManager‚ğg—p‚·‚éê‡A
-			//ˆê“x‚µ‚©RMIƒŒƒWƒXƒgƒŠ‚Ì“o˜^‹y‚ÑƒŠƒ‚[ƒgƒIƒuƒWƒFƒNƒg
-			//‚ÌƒoƒCƒ“ƒh‚ğ‚µ‚È‚¢‚æ‚¤‚Éƒtƒ‰ƒO‚ğƒ`ƒFƒbƒN
-			//ƒRƒ“ƒeƒLƒXƒg‚ÌÄƒ[ƒh‚È‚ÇAƒNƒ‰ƒX‚²‚ÆƒŠƒ[ƒh‚³‚ê‚é‚ÆA
-			//‰“Šu‚©‚çİ’è‚·‚éî•ñ‚ªŒÃ‚¢ƒNƒ‰ƒXƒIƒuƒWƒFƒNƒg‚É‘Î‚µ‚Ä
-			//s‚í‚ê‚Ä‚µ‚Ü‚¢A‘€ì‚Å‚«‚È‚­‚È‚Á‚Ä‚µ‚Ü‚¤
-			//‚»‚Ì‚Æ‚«‚Ì‚½‚ß‚ÉÄ“xƒoƒCƒ“ƒh‚Å‚«‚é‚æ‚¤‚Éí‚Éƒtƒ‰ƒO‚ğƒ`ƒFƒbƒN‚·‚é
+			//è¤‡æ•°ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã§BacksightManagerã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã€
+			//ä¸€åº¦ã—ã‹RMIãƒ¬ã‚¸ã‚¹ãƒˆãƒªã®ç™»éŒ²åŠã³ãƒªãƒ¢ãƒ¼ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+			//ã®ãƒã‚¤ãƒ³ãƒ‰ã‚’ã—ãªã„ã‚ˆã†ã«ãƒ•ãƒ©ã‚°ã‚’ãƒã‚§ãƒƒã‚¯
+			//ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã®å†ãƒ­ãƒ¼ãƒ‰æ™‚ãªã©ã€ã‚¯ãƒ©ã‚¹ã”ã¨ãƒªãƒ­ãƒ¼ãƒ‰ã•ã‚Œã‚‹ã¨ã€
+			//é éš”ã‹ã‚‰è¨­å®šã™ã‚‹æƒ…å ±ãŒå¤ã„ã‚¯ãƒ©ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«å¯¾ã—ã¦
+			//è¡Œã‚ã‚Œã¦ã—ã¾ã„ã€æ“ä½œã§ããªããªã£ã¦ã—ã¾ã†
+			//ãã®ã¨ãã®ãŸã‚ã«å†åº¦ãƒã‚¤ãƒ³ãƒ‰ã§ãã‚‹ã‚ˆã†ã«å¸¸ã«ãƒ•ãƒ©ã‚°ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹
 			if (registry == null) {
 				try {
 					try {
@@ -194,10 +194,10 @@ public class BacksightManager implements HttpSessionListener, Filter {
 							factory,
 							factory);
 					} catch (ExportException e) {
-						//ƒRƒ“ƒeƒLƒXƒg‚ÌÄƒ[ƒh‚È‚ÇAƒNƒ‰ƒX‚ªƒŠƒ[ƒh‚³‚ê‚½ê‡
-						//ƒtƒ‰ƒO‚ªƒŠƒZƒbƒg‚³‚ê‚Ä‚µ‚Ü‚¤‚Ì‚ÅAÄ“xRMIƒŒƒWƒXƒgƒŠ‚Ì“o˜^
-						//‚ğs‚Á‚Ä‚µ‚Ü‚¤
-						//‚»‚Ìê‡‚Íd•û‚ª‚È‚¢‚Ì‚ÅAExportException‚ğƒLƒƒƒbƒ`‚µ–³‹‚·‚é
+						//ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã®å†ãƒ­ãƒ¼ãƒ‰æ™‚ãªã©ã€ã‚¯ãƒ©ã‚¹ãŒãƒªãƒ­ãƒ¼ãƒ‰ã•ã‚ŒãŸå ´åˆ
+						//ãƒ•ãƒ©ã‚°ãŒãƒªã‚»ãƒƒãƒˆã•ã‚Œã¦ã—ã¾ã†ã®ã§ã€å†åº¦RMIãƒ¬ã‚¸ã‚¹ãƒˆãƒªã®ç™»éŒ²
+						//ã‚’è¡Œã£ã¦ã—ã¾ã†
+						//ãã®å ´åˆã¯ä»•æ–¹ãŒãªã„ã®ã§ã€ExportExceptionã‚’ã‚­ãƒ£ãƒƒãƒã—ç„¡è¦–ã™ã‚‹
 					}
 
 					controller = new BacksightControllerImpl(contextName);
@@ -246,7 +246,7 @@ public class BacksightManager implements HttpSessionListener, Filter {
 
 				String port = config.getInitParameter("accesscontrol-server-port");
 				if (!isAvailable(port)) throw new IllegalArgumentException(
-					"use-accesscontrol ‚ğ true ‚Æ‚µ‚½ê‡A accesscontrol-server-port ‚Í•K{‚Æ‚È‚è‚Ü‚·");
+					"use-accesscontrol ã‚’ true ã¨ã—ãŸå ´åˆã€ accesscontrol-server-port ã¯å¿…é ˆã¨ãªã‚Šã¾ã™");
 
 				server = new AccessControlServer(
 					Integer.parseInt(port),
@@ -351,7 +351,7 @@ public class BacksightManager implements HttpSessionListener, Filter {
 
 		synchronized (contexts) {
 			if (contexts.containsKey(contextName)) throw new IllegalStateException(
-				contextName + " ‚ÍŠù‚Ég—p‚³‚ê‚Ä‚¢‚Ü‚·");
+				contextName + " ã¯æ—¢ã«ä½¿ç”¨ã•ã‚Œã¦ã„ã¾ã™");
 			contexts.put(contextName, context);
 		}
 
@@ -379,7 +379,7 @@ public class BacksightManager implements HttpSessionListener, Filter {
 
 		final SessionValues sessionValues = SessionValues.prepare(session);
 
-		//ƒƒO—p‚Ìî•ñ‚ğƒZƒbƒg‚·‚é
+		//ãƒ­ã‚°ç”¨ã®æƒ…å ±ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 		sessionValues.setRemoteUser(username);
 
 		String remoteAddr = httpRequest.getRemoteAddr();
@@ -396,16 +396,16 @@ public class BacksightManager implements HttpSessionListener, Filter {
 			if (invalidSessionRedirectPath != null) {
 				request.getRequestDispatcher(invalidSessionRedirectPath)
 					.forward(request, response);
-				//‚±‚±‚Å–³Œø‰»‚µ‚È‚¢‚Æ‘JˆÚæ‚Ìƒy[ƒW‚ªƒZƒbƒVƒ‡ƒ“ŠO‚Æ‚È‚è•\¦‚Å‚«‚È‚¢‰Â”\«‚ª‚ ‚é
+				//ã“ã“ã§ç„¡åŠ¹åŒ–ã—ãªã„ã¨é·ç§»å…ˆã®ãƒšãƒ¼ã‚¸ãŒã‚»ãƒƒã‚·ãƒ§ãƒ³å¤–ã¨ãªã‚Šè¡¨ç¤ºã§ããªã„å¯èƒ½æ€§ãŒã‚ã‚‹
 				session.invalidate();
 				return;
 			}
 
 			session.invalidate();
-			throw new InvalidSessionException("ƒZƒbƒVƒ‡ƒ“‚ÍŠù‚É–³Œø‰»‚³‚ê‚Ä‚¢‚Ü‚·");
+			throw new InvalidSessionException("ã‚»ãƒƒã‚·ãƒ§ãƒ³ã¯æ—¢ã«ç„¡åŠ¹åŒ–ã•ã‚Œã¦ã„ã¾ã™");
 		}
 
-		//ƒ†[ƒU[‚ª‘¶İ‚µ‚È‚¢‚ÆˆÓ–¡‚ª‚È‚¢ƒ`ƒFƒbƒN‚È‚Ì‚ÅAƒ†[ƒU[‚ª‚ ‚é‚©Šm”F
+		//ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒå­˜åœ¨ã—ãªã„ã¨æ„å‘³ãŒãªã„ãƒã‚§ãƒƒã‚¯ãªã®ã§ã€ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒã‚ã‚‹ã‹ç¢ºèª
 		if (isAvailable(username) && oneUserSessionCount > 0) if (!context.checkOneUserSessionCount(
 			username,
 			sessionID,
@@ -416,23 +416,23 @@ public class BacksightManager implements HttpSessionListener, Filter {
 						.forward(request, response);
 					return;
 				} finally {
-					//‚±‚±‚Å–³Œø‰»‚µ‚È‚¢‚Æ‘JˆÚæ‚Ìƒy[ƒW‚ªƒZƒbƒVƒ‡ƒ“ŠO‚Æ‚È‚è•\¦‚Å‚«‚È‚¢‰Â”\«‚ª‚ ‚é
+					//ã“ã“ã§ç„¡åŠ¹åŒ–ã—ãªã„ã¨é·ç§»å…ˆã®ãƒšãƒ¼ã‚¸ãŒã‚»ãƒƒã‚·ãƒ§ãƒ³å¤–ã¨ãªã‚Šè¡¨ç¤ºã§ããªã„å¯èƒ½æ€§ãŒã‚ã‚‹
 					session.invalidate();
 				}
 			}
 
 			session.invalidate();
-			throw new SessionCountOverException("g—p‚Å‚«‚éÅ‘åƒZƒbƒVƒ‡ƒ“” "
+			throw new SessionCountOverException("ä½¿ç”¨ã§ãã‚‹æœ€å¤§ã‚»ãƒƒã‚·ãƒ§ãƒ³æ•° "
 				+ oneUserSessionCount
-				+ " ‚ğ’´‚¦‚Ä‚¢‚Ü‚·");
+				+ " ã‚’è¶…ãˆã¦ã„ã¾ã™");
 		}
 
 		boolean excludesDupricateCheck = context.excludesDupricateCheck(uri);
 
 		synchronized (context.getSessionLockKey(sessionID)) {
-			//‚±‚Ìd‘g‚İ‚Å‰Šú‰»‚³‚ê‚Ä‚¢‚é‚©
+			//ã“ã®ä»•çµ„ã¿ã§åˆæœŸåŒ–ã•ã‚Œã¦ã„ã‚‹ã‹
 			if (sessionValues.initialize() && redirectToRoot) {
-				//‰‰ñ‚Æ‚¢‚¤‚±‚Æ‚Å / ‚Ö‹­§‘JˆÚ
+				//åˆå›ã¨ã„ã†ã“ã¨ã§ / ã¸å¼·åˆ¶é·ç§»
 				((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath()
 					+ "/");
 				return;
@@ -546,7 +546,7 @@ public class BacksightManager implements HttpSessionListener, Filter {
 	@Override
 	public void sessionDestroyed(HttpSessionEvent event) {
 		HttpSession session = event.getSession();
-		//‘SƒZƒbƒVƒ‡ƒ“ŠÇ—‚©‚çíœ
+		//å…¨ã‚»ãƒƒã‚·ãƒ§ãƒ³ç®¡ç†ã‹ã‚‰å‰Šé™¤
 		getContext(session.getServletContext().getServletContextName()).removeSession(
 			session);
 	}
@@ -569,16 +569,16 @@ public class BacksightManager implements HttpSessionListener, Filter {
 			+ request.getLocalAddr()
 			+ ")";
 		try {
-			mail.setSubject(contextName + " —áŠO”­¶’Ê’m");
+			mail.setSubject(contextName + " ä¾‹å¤–ç™ºç”Ÿé€šçŸ¥");
 
 			StringWriter writer = new StringWriter();
 			t.printStackTrace(new PrintWriter(writer));
 
-			mail.setMessage("‚±‚Ìƒ[ƒ‹‚Í "
+			mail.setMessage("ã“ã®ãƒ¡ãƒ¼ãƒ«ã¯ "
 				+ contextName
-				+ " ‚©‚ç©“®”zM‚³‚ê‚Ä‚¢‚Ü‚·B"
+				+ " ã‹ã‚‰è‡ªå‹•é…ä¿¡ã•ã‚Œã¦ã„ã¾ã™ã€‚"
 				+ LINE_SEPARATOR
-				+ "•s—v‚È•û‚ÍA‚¨è”‚Å‚·‚ªíœ‚ğ‚¨Šè‚¢‚¢‚½‚µ‚Ü‚·B"
+				+ "ä¸è¦ãªæ–¹ã¯ã€ãŠæ‰‹æ•°ã§ã™ãŒå‰Šé™¤ã‚’ãŠé¡˜ã„ã„ãŸã—ã¾ã™ã€‚"
 				+ LINE_SEPARATOR
 				+ LINE_SEPARATOR
 				+ message

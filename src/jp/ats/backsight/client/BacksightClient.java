@@ -5,9 +5,8 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jp.ats.backsight.BacksightController;
 import jp.ats.backsight.Common;
 import jp.ats.backsight.client.persistence.BacksightNode;
@@ -52,12 +51,12 @@ public class BacksightClient {
 
 	public static BacksightController getController(HttpSession session)
 		throws ApplicationException {
-		if (session == null) throw new ApplicationException("•s³‚ÈƒAƒNƒZƒX‚Å‚·");
+		if (session == null) throw new ApplicationException("ä¸æ­£ãªã‚¢ã‚¯ã‚»ã‚¹ã§ã™");
 
 		String site = getCurrentSite(session);
 		String context = getCurrentContext(session);
 		if (!U.isAllValuesAvailable(site, context)) {
-			throw new ApplicationException("•s³‚ÈƒAƒNƒZƒX‚Å‚·");
+			throw new ApplicationException("ä¸æ­£ãªã‚¢ã‚¯ã‚»ã‚¹ã§ã™");
 		}
 
 		try {
@@ -65,13 +64,13 @@ public class BacksightClient {
 		} catch (NotBoundException e) {
 			e.printStackTrace();
 			throw new ApplicationException(site
-				+ " ‚É‚ÍÚ‘±‚Å‚«‚Ü‚µ‚½‚ªA "
+				+ " ã«ã¯æ¥ç¶šã§ãã¾ã—ãŸãŒã€ "
 				+ context
-				+ " ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½");
+				+ " ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ");
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			throw new ApplicationException(site
-				+ " ‚ª‹N“®‚µ‚Ä‚¢‚È‚¢‚©Aƒlƒbƒgƒ[ƒN‚ÌƒGƒ‰[‚ª”­¶‚µ‚Ä‚¢‚Ü‚·");
+				+ " ãŒèµ·å‹•ã—ã¦ã„ãªã„ã‹ã€ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã®ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¦ã„ã¾ã™");
 		}
 	}
 

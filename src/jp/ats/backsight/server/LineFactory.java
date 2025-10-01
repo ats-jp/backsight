@@ -4,7 +4,7 @@ import static jp.ats.substrate.U.newHashSetOf;
 
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 class LineFactory {
 

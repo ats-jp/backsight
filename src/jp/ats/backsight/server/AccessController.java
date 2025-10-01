@@ -20,26 +20,26 @@ public class AccessController {
 			restrict(port);
 		} else {
 			throw new IllegalArgumentException(
-				"ƒpƒ‰ƒ[ƒ^‚É‚Í\"suspend\"‚©\"resume\"‚©\"restrict\"‚µ‚©g—p‚Å‚«‚Ü‚¹‚ñB");
+				"ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã«ã¯\"suspend\"ã‹\"resume\"ã‹\"restrict\"ã—ã‹ä½¿ç”¨ã§ãã¾ã›ã‚“ã€‚");
 		}
 	}
 
 	/**
-	 * ƒT[ƒo‚ğ‹N“®ó‘Ô‚É‚µ‚Ü‚·B
+	 * ã‚µãƒ¼ãƒã‚’èµ·å‹•çŠ¶æ…‹ã«ã—ã¾ã™ã€‚
 	 */
 	public static void resume(int port) throws IOException {
 		process('0', port);
 	}
 
 	/**
-	 * ƒT[ƒo‚ğˆê’â~ó‘Ô‚É‚µ‚Ü‚·B resume‚µ‚È‚¢ŒÀ‚èA‚Ç‚±‚©‚ç‚àƒAƒNƒZƒX‚Å‚«‚Ü‚¹‚ñB
+	 * ã‚µãƒ¼ãƒã‚’ä¸€æ™‚åœæ­¢çŠ¶æ…‹ã«ã—ã¾ã™ã€‚ resumeã—ãªã„é™ã‚Šã€ã©ã“ã‹ã‚‰ã‚‚ã‚¢ã‚¯ã‚»ã‚¹ã§ãã¾ã›ã‚“ã€‚
 	 */
 	public static void suspend(int port) throws IOException {
 		process('1', port);
 	}
 
 	/**
-	 * ƒAƒNƒZƒX‹–‰Â‚³‚ê‚½’[––‚©‚ç‚ÌƒŠƒNƒGƒXƒg‚Ì‚İˆ—‚·‚é‚æ‚¤‚É‚µ‚Ü‚·B
+	 * ã‚¢ã‚¯ã‚»ã‚¹è¨±å¯ã•ã‚ŒãŸç«¯æœ«ã‹ã‚‰ã®ãƒªã‚¯ã‚¨ã‚¹ãƒˆã®ã¿å‡¦ç†ã™ã‚‹ã‚ˆã†ã«ã—ã¾ã™ã€‚
 	 */
 	public static void restrict(int port) throws IOException {
 		process('2', port);

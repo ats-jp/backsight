@@ -51,11 +51,11 @@ public class AccessControlServer {
 		synchronized (lock) {
 			switch (state) {
 			case 0:
-				return "0:‹N“®ó‘Ô";
+				return "0:èµ·å‹•çŠ¶æ…‹";
 			case 1:
-				return "1:ˆê’â~";
+				return "1:ä¸€æ™‚åœæ­¢";
 			case 2:
-				return "2:‹–‰Â‚³‚ê‚½ƒ†[ƒU[ˆÈŠOˆê’â~";
+				return "2:è¨±å¯ã•ã‚ŒãŸãƒ¦ãƒ¼ã‚¶ãƒ¼ä»¥å¤–ä¸€æ™‚åœæ­¢";
 			default:
 				throw new IllegalStateException();
 			}
@@ -129,12 +129,12 @@ public class AccessControlServer {
 				InputStream input = getIOStream().getInputStream();
 				writer = new PrintWriter(new BufferedOutputStream(
 					getIOStream().getOutputStream()));
-				writer.println("ƒT[ƒo‚É‘Î‚·‚éw¦‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢ (10•b‚ÅØ’f‚³‚ê‚Ü‚·)");
-				writer.println("0:‹N“®ó‘Ô‚É•œ‹A");
-				writer.println("1:ˆê’â~");
-				writer.println("2:‹–‰Â‚³‚ê‚½ƒ†[ƒU[ˆÈŠOˆê’â~");
+				writer.println("ã‚µãƒ¼ãƒã«å¯¾ã™ã‚‹æŒ‡ç¤ºã‚’é¸æŠã—ã¦ãã ã•ã„ (10ç§’ã§åˆ‡æ–­ã•ã‚Œã¾ã™)");
+				writer.println("0:èµ·å‹•çŠ¶æ…‹ã«å¾©å¸°");
+				writer.println("1:ä¸€æ™‚åœæ­¢");
+				writer.println("2:è¨±å¯ã•ã‚ŒãŸãƒ¦ãƒ¼ã‚¶ãƒ¼ä»¥å¤–ä¸€æ™‚åœæ­¢");
 				synchronized (lock) {
-					writer.println("Œ»İ‚Ìó‘Ô‚Í[" + state + "]‚Å‚·");
+					writer.println("ç¾åœ¨ã®çŠ¶æ…‹ã¯[" + state + "]ã§ã™");
 				}
 				writer.print("[0|1|2] -> ");
 				writer.flush();
@@ -145,7 +145,7 @@ public class AccessControlServer {
 						state = 0;
 						listener.resume();
 						writer.println();
-						writer.println("0:‹N“®ó‘Ô‚É•œ‹A‚µ‚Ü‚µ‚½");
+						writer.println("0:èµ·å‹•çŠ¶æ…‹ã«å¾©å¸°ã—ã¾ã—ãŸ");
 						writer.flush();
 					}
 					return;
@@ -154,7 +154,7 @@ public class AccessControlServer {
 						state = 1;
 						listener.suspend();
 						writer.println();
-						writer.println("1:ˆê’â~‚µ‚Ü‚µ‚½");
+						writer.println("1:ä¸€æ™‚åœæ­¢ã—ã¾ã—ãŸ");
 						writer.flush();
 					}
 					return;
@@ -163,13 +163,13 @@ public class AccessControlServer {
 						state = 2;
 						listener.restrict();
 						writer.println();
-						writer.println("2:‹–‰Â‚³‚ê‚½ƒ†[ƒU[ˆÈŠOˆê’â~‚µ‚Ü‚µ‚½");
+						writer.println("2:è¨±å¯ã•ã‚ŒãŸãƒ¦ãƒ¼ã‚¶ãƒ¼ä»¥å¤–ä¸€æ™‚åœæ­¢ã—ã¾ã—ãŸ");
 						writer.flush();
 					}
 					return;
 				default:
 					writer.println();
-					writer.println("ó‘Ô‚Í•Ï‚í‚è‚Ü‚¹‚ñ‚Å‚µ‚½");
+					writer.println("çŠ¶æ…‹ã¯å¤‰ã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ");
 					writer.flush();
 					return;
 				}

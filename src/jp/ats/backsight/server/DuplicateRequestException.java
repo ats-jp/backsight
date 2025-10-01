@@ -1,6 +1,6 @@
 package jp.ats.backsight.server;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 @SuppressWarnings("serial")
 public class DuplicateRequestException extends ServletException {

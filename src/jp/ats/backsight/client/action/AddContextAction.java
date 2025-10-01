@@ -1,9 +1,8 @@
 package jp.ats.backsight.client.action;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jp.ats.backsight.client.Action;
 import jp.ats.backsight.client.BacksightFilter;
 import jp.ats.backsight.client.persistence.BacksightNode;

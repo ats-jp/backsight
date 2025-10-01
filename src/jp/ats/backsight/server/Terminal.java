@@ -81,10 +81,10 @@ public class Terminal {
 	void adjustTickets() {
 		int concurrentRequestCount = getConcurrentRequestCount();
 
-		//“¯Às‰Â”\ƒŠƒNƒGƒXƒg”‚É•ÏX‚ª‚È‚¯‚ê‚Îreturn
+		//åŒæ™‚å®Ÿè¡Œå¯èƒ½ãƒªã‚¯ã‚¨ã‚¹ãƒˆæ•°ã«å¤‰æ›´ãŒãªã‘ã‚Œã°return
 		if (concurrentRequestCount == currentTicketCapacity.intValue()) return;
 
-		//“¯Às‰Â”\ƒŠƒNƒGƒXƒg”‚ªk¬‚³‚ê‚½ê‡
+		//åŒæ™‚å®Ÿè¡Œå¯èƒ½ãƒªã‚¯ã‚¨ã‚¹ãƒˆæ•°ãŒç¸®å°ã•ã‚ŒãŸå ´åˆ
 		while (concurrentRequestCount < currentTicketCapacity.intValue()) {
 			try {
 				requestTickets.take();
@@ -94,7 +94,7 @@ public class Terminal {
 			currentTicketCapacity.decrementAndGet();
 		}
 
-		//“¯Às‰Â”\ƒŠƒNƒGƒXƒg”‚ªŠg‘å‚³‚ê‚½ê‡
+		//åŒæ™‚å®Ÿè¡Œå¯èƒ½ãƒªã‚¯ã‚¨ã‚¹ãƒˆæ•°ãŒæ‹¡å¤§ã•ã‚ŒãŸå ´åˆ
 		while (concurrentRequestCount > currentTicketCapacity.intValue()) {
 			requestTickets.add(new Object());
 			currentTicketCapacity.incrementAndGet();

@@ -2,11 +2,10 @@ package jp.ats.backsight.client.action;
 
 import java.rmi.RemoteException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jp.ats.backsight.BacksightController;
 import jp.ats.backsight.client.Action;
 import jp.ats.backsight.client.ApplicationException;
@@ -52,13 +51,13 @@ public class ControlAction implements Action {
 		}
 
 		try {
-			//administratorNames‚¾‚¯‚Í“ü—ÍŒŸ¸‚µ‚È‚¢‚Ì‚ÅA–œ‚ªˆênull‚Å‚ ‚Á‚½ê‡‚ðl—¶
+			//administratorNamesã ã‘ã¯å…¥åŠ›æ¤œæŸ»ã—ãªã„ã®ã§ã€ä¸‡ãŒä¸€nullã§ã‚ã£ãŸå ´åˆã‚’è€ƒæ…®
 			controller.setAdministratorNames(administratorNames);
 			controller.setConcurrentSessionCount(concurrentSessionCount);
 			controller.setConcurrentRequestCount(concurrentRequestCount);
 			controller.setSessionTimeoutMinutes(sessionTimeoutMinutes);
 		} catch (RemoteException e) {
-			throw new ApplicationException("ƒŠƒ‚[ƒgÚ‘±‚ÅáŠQ‚ª”­¶‚µ‚Ü‚µ‚½ ["
+			throw new ApplicationException("ãƒªãƒ¢ãƒ¼ãƒˆæŽ¥ç¶šã§éšœå®³ãŒç™ºç”Ÿã—ã¾ã—ãŸ ["
 				+ e.getMessage()
 				+ "]");
 		}

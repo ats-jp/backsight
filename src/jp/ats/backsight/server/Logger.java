@@ -30,7 +30,7 @@ public class Logger {
 		this.directory = directory;
 		this.prefix = prefix;
 		start();
-		System.out.println("ƒƒOo—Í‚ğŠJn‚µ‚Ü‚µ‚½");
+		System.out.println("ãƒ­ã‚°å‡ºåŠ›ã‚’é–‹å§‹ã—ã¾ã—ãŸ");
 	}
 
 	public synchronized void destroy() {
@@ -44,10 +44,10 @@ public class Logger {
 		}
 
 		synchronized (buffer) {
-			if (closed) throw new IllegalStateException("Šù‚ÉƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÍI—¹‚µ‚Ä‚¢‚Ü‚·");
+			if (closed) throw new IllegalStateException("æ—¢ã«ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã¯çµ‚äº†ã—ã¦ã„ã¾ã™");
 			buffer.add(log);
-			//buffer‚ª‚½‚Ü‚Á‚Ä‚¢‚éê‡A‰½‚ç‚©‚ÌƒGƒ‰[‚Åo—ÍƒXƒŒƒbƒh‚ª
-			//€‚ñ‚Å‚¢‚é‰Â”\«‚ª‚ ‚é‚Ì‚ÅA€‚ñ‚Å‚¢‚½‚çÄ‹N“®‚³‚¹‚é
+			//bufferãŒãŸã¾ã£ã¦ã„ã‚‹å ´åˆã€ä½•ã‚‰ã‹ã®ã‚¨ãƒ©ãƒ¼ã§å‡ºåŠ›ã‚¹ãƒ¬ãƒƒãƒ‰ãŒ
+			//æ­»ã‚“ã§ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã®ã§ã€æ­»ã‚“ã§ã„ãŸã‚‰å†èµ·å‹•ã•ã›ã‚‹
 			if (buffer.size() > 300) start();
 		}
 	}
@@ -66,7 +66,7 @@ public class Logger {
 				closed = true;
 			}
 			flush();
-			System.out.println("ƒƒOo—Í‚Í³í‚ÉI—¹‚µ‚Ü‚µ‚½");
+			System.out.println("ãƒ­ã‚°å‡ºåŠ›ã¯æ­£å¸¸ã«çµ‚äº†ã—ã¾ã—ãŸ");
 		}
 	}
 

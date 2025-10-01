@@ -3,8 +3,7 @@ package jp.ats.backsight.server;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.http.HttpSession;
-
+import jakarta.servlet.http.HttpSession;
 import jp.ats.substrate.U;
 
 class SessionValues {
@@ -36,10 +35,10 @@ class SessionValues {
 
 	void checkDuplicate(String uri) throws DuplicateRequestException {
 		synchronized (duplicateRequestChecker) {
-			//今回リクエストされたuriが、現在実行中のものであれば2重リクエストとみなし、例外をスロー
+			//莉雁屓繝ｪ繧ｯ繧ｨ繧ｹ繝医＆繧後◆uri縺後∫樟蝨ｨ螳溯｡御ｸｭ縺ｮ繧ゅ�ｮ縺ｧ縺ゅｌ縺ｰ2驥阪Μ繧ｯ繧ｨ繧ｹ繝医→縺ｿ縺ｪ縺励∽ｾ句､悶ｒ繧ｹ繝ｭ繝ｼ
 			if (duplicateRequestChecker.contains(uri)) throw new DuplicateRequestException(
 				uri);
-			//2重リクエストでなければ、チェック用に追加
+			//2驥阪Μ繧ｯ繧ｨ繧ｹ繝医〒縺ｪ縺代ｌ縺ｰ縲√メ繧ｧ繝�繧ｯ逕ｨ縺ｫ霑ｽ蜉
 			duplicateRequestChecker.add(uri);
 		}
 	}
