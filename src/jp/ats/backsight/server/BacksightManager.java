@@ -84,29 +84,33 @@ public class BacksightManager implements HttpSessionListener, Filter {
 				stackTrace[i] = elements[i].toString();
 			}
 
-			result.add(new ThreadInfo(
-				thread.getName(),
-				getRequestInfo(thread),
-				stackTrace));
+			result.add(
+				new ThreadInfo(
+					thread.getName(),
+					getRequestInfo(thread),
+					stackTrace));
 		}
 
 		return result.toArray(new ThreadInfo[result.size()]);
 	}
 
 	public static void restartAccessControlServer(String contextName) {
-		AccessControlServer server = getContext(contextName).getAccessControlServer();
+		AccessControlServer server = getContext(contextName)
+			.getAccessControlServer();
 		if (server == null) return;
 		server.restartControlServer();
 	}
 
 	public static boolean isAccessControlServerShutdowned(String contextName) {
-		AccessControlServer server = getContext(contextName).getAccessControlServer();
+		AccessControlServer server = getContext(contextName)
+			.getAccessControlServer();
 		if (server == null) return true;
 		return server.isShutdowned();
 	}
 
 	public static String getAccessControlServerState(String contextName) {
-		AccessControlServer server = getContext(contextName).getAccessControlServer();
+		AccessControlServer server = getContext(contextName)
+			.getAccessControlServer();
 		if (server == null) return "";
 		return server.getStateInfo();
 	}
@@ -166,12 +170,12 @@ public class BacksightManager implements HttpSessionListener, Filter {
 	@Override
 	public void init(FilterConfig config) throws ServletException {
 		String host = config.getInitParameter("backsight-host");
-		if (!isAvailable(host)) throw new IllegalArgumentException(
-			"backsight-host は必須です");
+		if (!isAvailable(host))
+			throw new IllegalArgumentException("backsight-host は必須です");
 
 		String contextName = config.getInitParameter("name");
-		if (contextName == null) contextName = config.getServletContext()
-			.getServletContextName();
+		if (contextName == null)
+			contextName = config.getServletContext().getServletContextName();
 		if (!isAvailable(contextName)) throw new IllegalArgumentException(
 			"filter/init-param/param-name が name のもの、または context-param/display-name のどちらかが必要です");
 
@@ -189,10 +193,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 					try {
 						RMISocketFactory factory = new BacksightRMISocketFactory(
 							InetAddress.getByName(host));
-						registry = LocateRegistry.createRegistry(
-							REGISTRY_PORT,
-							factory,
-							factory);
+						registry = LocateRegistry
+							.createRegistry(REGISTRY_PORT, factory, factory);
 					} catch (ExportException e) {
 						//コンテキストの再ロード時など、クラスがリロードされた場合
 						//フラグがリセットされてしまうので、再度RMIレジストリの登録
@@ -210,31 +212,39 @@ public class BacksightManager implements HttpSessionListener, Filter {
 			}
 		}
 
-		Terminal terminal = Terminal.getInstance(config.getServletContext()
-			.getServletContextName());
+		Terminal terminal = Terminal
+			.getInstance(config.getServletContext().getServletContextName());
 
-		String defaultAdministratorNames = config.getInitParameter("default-administrator-names");
+		String defaultAdministratorNames = config
+			.getInitParameter("default-administrator-names");
 		if (isAvailable(defaultAdministratorNames)) {
-			terminal.setAdministratorNames(defaultAdministratorNames.trim()
-				.split(" +"));
+			terminal.setAdministratorNames(
+				defaultAdministratorNames.trim().split(" +"));
 		}
 
-		String defaultConcurrentSessionCount = config.getInitParameter("default-concurrentsession-count");
+		String defaultConcurrentSessionCount = config
+			.getInitParameter("default-concurrentsession-count");
 		if (isAvailable(defaultConcurrentSessionCount)) {
-			terminal.setConcurrentSessionCount(Integer.parseInt(defaultConcurrentSessionCount));
+			terminal.setConcurrentSessionCount(
+				Integer.parseInt(defaultConcurrentSessionCount));
 		}
 
-		String defaultConcurrentRequestCount = config.getInitParameter("default-concurrentrequest-count");
+		String defaultConcurrentRequestCount = config
+			.getInitParameter("default-concurrentrequest-count");
 		if (isAvailable(defaultConcurrentRequestCount)) {
-			terminal.setConcurrentRequestCount(Integer.parseInt(defaultConcurrentRequestCount));
+			terminal.setConcurrentRequestCount(
+				Integer.parseInt(defaultConcurrentRequestCount));
 		}
 
-		String defaultSessionTimeoutMinutes = config.getInitParameter("default-sessiontimeout-minutes");
+		String defaultSessionTimeoutMinutes = config
+			.getInitParameter("default-sessiontimeout-minutes");
 		if (isAvailable(defaultSessionTimeoutMinutes)) {
-			terminal.setSessionTimeoutMinutes(Integer.parseInt(defaultSessionTimeoutMinutes));
+			terminal.setSessionTimeoutMinutes(
+				Integer.parseInt(defaultSessionTimeoutMinutes));
 		}
 
-		String oneUserSessionCount = config.getInitParameter("oneuser-session-count");
+		String oneUserSessionCount = config
+			.getInitParameter("oneuser-session-count");
 		if (isAvailable(oneUserSessionCount)) {
 			this.oneUserSessionCount = Integer.parseInt(oneUserSessionCount);
 		}
@@ -244,7 +254,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 		if (isAvailable(useAccessContorl)) {
 			if (Boolean.parseBoolean(useAccessContorl)) {
 
-				String port = config.getInitParameter("accesscontrol-server-port");
+				String port = config
+					.getInitParameter("accesscontrol-server-port");
 				if (!isAvailable(port)) throw new IllegalArgumentException(
 					"use-accesscontrol を true とした場合、 accesscontrol-server-port は必須となります");
 
@@ -259,27 +270,32 @@ public class BacksightManager implements HttpSessionListener, Filter {
 			this.redirectToRoot = Boolean.parseBoolean(redirectToRoot);
 		}
 
-		String invalidSessionRedirectPath = care(config.getInitParameter("invalidsession-redirect-path"));
+		String invalidSessionRedirectPath = care(
+			config.getInitParameter("invalidsession-redirect-path"));
 		if (!invalidSessionRedirectPath.startsWith("/")) {
 			invalidSessionRedirectPath = "/" + invalidSessionRedirectPath;
 		}
 		this.invalidSessionRedirectPath = invalidSessionRedirectPath;
 
-		String sessionCountOverRedirectPath = care(config.getInitParameter("sessioncountover-redirect-path"));
+		String sessionCountOverRedirectPath = care(
+			config.getInitParameter("sessioncountover-redirect-path"));
 		if (!sessionCountOverRedirectPath.startsWith("/")) {
 			sessionCountOverRedirectPath = "/" + sessionCountOverRedirectPath;
 		}
 		this.sessionCountOverRedirectPath = sessionCountOverRedirectPath;
 
 		LineFactory lineFactory = new LineFactory(
-			care(config.getInitParameter("password-submit-paths")).split(
-				" *, *"),
-			care(config.getInitParameter("password-input-names")).split(" *, *"));
+			care(config.getInitParameter("password-submit-paths"))
+				.split(" *, *"),
+			care(config.getInitParameter("password-input-names"))
+				.split(" *, *"));
 
 		Mail mail = null;
-		String exceptionMailHost = config.getInitParameter("exceptionmail-host");
+		String exceptionMailHost = config
+			.getInitParameter("exceptionmail-host");
 		if (isAvailable(exceptionMailHost)) {
-			String exceptionMailUser = config.getInitParameter("exceptionmail-user");
+			String exceptionMailUser = config
+				.getInitParameter("exceptionmail-user");
 			if (isAvailable(exceptionMailUser)) {
 				mail = new Mail(
 					exceptionMailHost,
@@ -289,7 +305,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 				mail = new Mail(exceptionMailHost);
 			}
 			try {
-				mail.addMailTo(config.getInitParameter("exceptionmail-address"));
+				mail.addMailTo(
+					config.getInitParameter("exceptionmail-address"));
 				mail.setFrom(config.getInitParameter("exceptionmail-from"));
 			} catch (MessagingException e) {
 				throw new IllegalArgumentException(e);
@@ -317,25 +334,31 @@ public class BacksightManager implements HttpSessionListener, Filter {
 			logFilePrefix = contextName;
 		}
 
-		Logger logger = new Logger(logInterval <= 0
-			? defaultLogInterval
-			: logInterval, logDirectory, logFilePrefix);
+		Logger logger = new Logger(
+			logInterval <= 0 ? defaultLogInterval : logInterval,
+			logDirectory,
+			logFilePrefix);
 
-		String userInfoManagerClass = config.getInitParameter("userinfo-manager-class");
+		String userInfoManagerClass = config
+			.getInitParameter("userinfo-manager-class");
 		UserInfoManager userInfoManager = null;
 		if (isAvailable(userInfoManagerClass)) {
 			try {
-				userInfoManager = (UserInfoManager) Class.forName(
-					userInfoManagerClass).newInstance();
+				userInfoManager = (UserInfoManager) Class
+					.forName(userInfoManagerClass)
+					.getConstructor()
+					.newInstance();
 			} catch (Exception e) {
 				throw new IllegalStateException(e);
 			}
 		}
 
 		Pattern dupricateCheckExcludePattern = null;
-		String dupricateCheckExcludePatternParam = config.getInitParameter("dupricatecheck-exclude-pattern");
+		String dupricateCheckExcludePatternParam = config
+			.getInitParameter("dupricatecheck-exclude-pattern");
 		if (isAvailable(dupricateCheckExcludePatternParam)) {
-			dupricateCheckExcludePattern = Pattern.compile(dupricateCheckExcludePatternParam);
+			dupricateCheckExcludePattern = Pattern
+				.compile(dupricateCheckExcludePatternParam);
 		}
 
 		context = new Context(
@@ -350,8 +373,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 			dupricateCheckExcludePattern);
 
 		synchronized (contexts) {
-			if (contexts.containsKey(contextName)) throw new IllegalStateException(
-				contextName + " は既に使用されています");
+			if (contexts.containsKey(contextName))
+				throw new IllegalStateException(contextName + " は既に使用されています");
 			contexts.put(contextName, context);
 		}
 
@@ -362,7 +385,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 	public void doFilter(
 		ServletRequest request,
 		ServletResponse response,
-		FilterChain chain) throws IOException, ServletException {
+		FilterChain chain)
+		throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 
 		final String username = httpRequest.getRemoteUser();
@@ -374,8 +398,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 
 		final String sessionID = context.adjustSessionID(session);
 
-		session.setMaxInactiveInterval(context.getTerminal()
-			.getSessionTimeoutMinutes() * 60);
+		session.setMaxInactiveInterval(
+			context.getTerminal().getSessionTimeoutMinutes() * 60);
 
 		final SessionValues sessionValues = SessionValues.prepare(session);
 
@@ -388,7 +412,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 		sessionValues.setCurrentAccessTime(System.currentTimeMillis());
 
 		UserInfoManager userInfoManager = context.getUserInfoManager();
-		if (userInfoManager != null) sessionValues.setUserInfo(userInfoManager.getUserInfo(username));
+		if (userInfoManager != null)
+			sessionValues.setUserInfo(userInfoManager.getUserInfo(username));
 
 		String uri = httpRequest.getRequestURI();
 
@@ -406,26 +431,28 @@ public class BacksightManager implements HttpSessionListener, Filter {
 		}
 
 		//ユーザーが存在しないと意味がないチェックなので、ユーザーがあるか確認
-		if (isAvailable(username) && oneUserSessionCount > 0) if (!context.checkOneUserSessionCount(
-			username,
-			sessionID,
-			oneUserSessionCount)) {
-			if (sessionCountOverRedirectPath != null) {
-				try {
-					request.getRequestDispatcher(sessionCountOverRedirectPath)
-						.forward(request, response);
-					return;
-				} finally {
-					//ここで無効化しないと遷移先のページがセッション外となり表示できない可能性がある
-					session.invalidate();
-				}
-			}
+		if (isAvailable(username) && oneUserSessionCount > 0)
+			if (!context.checkOneUserSessionCount(
+				username,
+				sessionID,
+				oneUserSessionCount)) {
+					if (sessionCountOverRedirectPath != null) {
+						try {
+							request
+								.getRequestDispatcher(
+									sessionCountOverRedirectPath)
+								.forward(request, response);
+							return;
+						} finally {
+							//ここで無効化しないと遷移先のページがセッション外となり表示できない可能性がある
+							session.invalidate();
+						}
+					}
 
-			session.invalidate();
-			throw new SessionCountOverException("使用できる最大セッション数 "
-				+ oneUserSessionCount
-				+ " を超えています");
-		}
+					session.invalidate();
+					throw new SessionCountOverException(
+						"使用できる最大セッション数 " + oneUserSessionCount + " を超えています");
+				}
 
 		boolean excludesDupricateCheck = context.excludesDupricateCheck(uri);
 
@@ -433,8 +460,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 			//この仕組みで初期化されているか
 			if (sessionValues.initialize() && redirectToRoot) {
 				//初回ということで / へ強制遷移
-				((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath()
-					+ "/");
+				((HttpServletResponse) response)
+					.sendRedirect(httpRequest.getContextPath() + "/");
 				return;
 			}
 
@@ -507,7 +534,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 				requestInfo.remove(thread);
 			}
 
-			if (!excludesDupricateCheck) sessionValues.removeFromDuplicateRequestChecker(uri);
+			if (!excludesDupricateCheck)
+				sessionValues.removeFromDuplicateRequestChecker(uri);
 		}
 	}
 
@@ -518,17 +546,20 @@ public class BacksightManager implements HttpSessionListener, Filter {
 
 		try {
 			Naming.unbind(Common.getRemoteObjectName(context.getName()));
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 
 		try {
 			UnicastRemoteObject.unexportObject(context.getController(), true);
-		} catch (NoSuchObjectException e) {}
+		} catch (NoSuchObjectException e) {
+		}
 
 		synchronized (BacksightManager.class) {
 			if (registry != null) {
 				try {
 					UnicastRemoteObject.unexportObject(registry, true);
-				} catch (NoSuchObjectException e) {}
+				} catch (NoSuchObjectException e) {
+				}
 				registry = null;
 			}
 		}
@@ -537,8 +568,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 	@Override
 	public void sessionCreated(HttpSessionEvent event) {
 		HttpSession session = event.getSession();
-		if (!getContext(session.getServletContext().getServletContextName()).addSession(
-			session)) return;
+		if (!getContext(session.getServletContext().getServletContextName())
+			.addSession(session)) return;
 
 		SessionValues.prepare(session);
 	}
@@ -547,8 +578,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 	public void sessionDestroyed(HttpSessionEvent event) {
 		HttpSession session = event.getSession();
 		//全セッション管理から削除
-		getContext(session.getServletContext().getServletContextName()).removeSession(
-			session);
+		getContext(session.getServletContext().getServletContextName())
+			.removeSession(session);
 	}
 
 	@Override
@@ -574,17 +605,18 @@ public class BacksightManager implements HttpSessionListener, Filter {
 			StringWriter writer = new StringWriter();
 			t.printStackTrace(new PrintWriter(writer));
 
-			mail.setMessage("このメールは "
-				+ contextName
-				+ " から自動配信されています。"
-				+ LINE_SEPARATOR
-				+ "不要な方は、お手数ですが削除をお願いいたします。"
-				+ LINE_SEPARATOR
-				+ LINE_SEPARATOR
-				+ message
-				+ LINE_SEPARATOR
-				+ LINE_SEPARATOR
-				+ writer.toString());
+			mail.setMessage(
+				"このメールは "
+					+ contextName
+					+ " から自動配信されています。"
+					+ LINE_SEPARATOR
+					+ "不要な方は、お手数ですが削除をお願いいたします。"
+					+ LINE_SEPARATOR
+					+ LINE_SEPARATOR
+					+ message
+					+ LINE_SEPARATOR
+					+ LINE_SEPARATOR
+					+ writer.toString());
 			mail.send();
 		} catch (MessagingException e) {
 			throw new IllegalStateException(e);

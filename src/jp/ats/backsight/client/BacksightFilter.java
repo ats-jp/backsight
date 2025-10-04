@@ -41,13 +41,15 @@ public class BacksightFilter implements Filter {
 	}
 
 	@Override
-	public void init(FilterConfig config) throws ServletException {}
+	public void init(FilterConfig config) throws ServletException {
+	}
 
 	@Override
 	public void doFilter(
 		ServletRequest baseRequest,
 		ServletResponse baseResponse,
-		FilterChain chain) throws IOException, ServletException {
+		FilterChain chain)
+		throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) baseRequest;
 		HttpServletResponse response = (HttpServletResponse) baseResponse;
 		String requested = request.getRequestURI();
@@ -85,6 +87,7 @@ public class BacksightFilter implements Filter {
 	private static Action getAction(String name) throws ServletException {
 		try {
 			return (Action) Class.forName(packageName + ".action." + name)
+				.getConstructor()
 				.newInstance();
 		} catch (Exception e) {
 			throw new ServletException(e);
