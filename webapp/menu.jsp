@@ -30,13 +30,13 @@ BacksightClient.init(request);
 
 <font size="-1">
 デバッグ用機能
-<a href="javascript:void(0);" onclick="$('forDebug').style.height = '150px'; $('forDebug').style.visibility = 'visible';">表示</a>
+<a href="javascript:void(0);" onclick="$('forDebug').style.display = 'block';">表示</a>
 |
-<a href="javascript:void(0);" onclick="$('forDebug').style.height = '1px'; $('forDebug').style.visibility = 'hidden';">非表示</a>
+<a href="javascript:void(0);" onclick="$('forDebug').style.display = 'none';">非表示</a>
 </font>
 <br><br>
 
-<div id="forDebug" style="visibility:hidden; height:1px; overflow:hidden;">
+<div id="forDebug" style="display: none;">
 <a href="sessionAttributeList.jsp">セッション属性値一覧</a>
 <br><br>
 <a href="allThread.jsp">全スレッド一覧</a>

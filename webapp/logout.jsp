@@ -4,5 +4,5 @@
 <%@ page language="java" %>
 <%
 session.invalidate();
-response.sendRedirect("");
+response.sendRedirect("./");
 %>

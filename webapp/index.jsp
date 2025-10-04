@@ -168,12 +168,12 @@ startMonitoringCurrentCount('session', intervalSessionIds, '<%=site.getAddress()
 <hr>
 <font size="-1">
 新規管理対象アプリケーションの登録
-<a href="javascript:void(0);" onclick="$('addContextForm').style.height = '150px'; $('addContextForm').style.visibility = 'visible'; $('site_id').focus(); dexter.showAllValidationMessages();">表示</a>
+<a href="javascript:void(0);" onclick="$('addContextForm').style.display = 'block'; $('site_id').focus(); dexter.showAllValidationMessages(); dexter.adjustAllValidationMessages();">表示</a>
 |
-<a href="javascript:void(0);" onclick="$('addContextForm').style.height = '1px'; $('addContextForm').style.visibility = 'hidden'; dexter.hideAllValidationMessages();">非表示</a>
+<a href="javascript:void(0);" onclick="$('addContextForm').style.display = 'none'; dexter.hideAllValidationMessages();">非表示</a>
 </font>
 <br><br>
-<div id="addContextForm" style="visibility:hidden; height:1px; overflow:hidden;">
+<div id="addContextForm" style="display: none;">
 <form method="GET" id="NewContextForm" action="AddContextAction.do">
 ホスト名またはIPアドレス
 <br>
