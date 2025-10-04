@@ -7,7 +7,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/substrate"/>
 	<classpathentry kind="lib" path="dependencies/annotations-api.jar"/>
 	<classpathentry kind="lib" path="dependencies/el-api.jar"/>
 	<classpathentry kind="lib" path="dependencies/jasper.jar"/>
@@ -15,5 +14,6 @@
 	<classpathentry kind="lib" path="dependencies/servlet-api.jar"/>
 	<classpathentry kind="lib" path="dependencies/activation.jar"/>
 	<classpathentry kind="lib" path="dependencies/mail.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/substrate.jar"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>
