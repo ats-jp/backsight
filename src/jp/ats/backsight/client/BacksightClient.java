@@ -63,14 +63,16 @@ public class BacksightClient {
 			return getController(site, context);
 		} catch (NotBoundException e) {
 			e.printStackTrace();
-			throw new ApplicationException(site
-				+ " には接続できましたが、 "
-				+ context
-				+ " が見つかりませんでした");
+			throw new ApplicationException(
+				site
+					+ " には接続できましたが、 "
+					+ context
+					+ " が見つかりませんでした");
 		} catch (RemoteException e) {
 			e.printStackTrace();
-			throw new ApplicationException(site
-				+ " が起動していないか、ネットワークのエラーが発生しています");
+			throw new ApplicationException(
+				site
+					+ " が起動していないか、ネットワークのエラーが発生しています");
 		}
 	}
 
@@ -141,12 +143,14 @@ public class BacksightClient {
 
 	private static BacksightController getController(
 		String siteAddress,
-		String contextName) throws NotBoundException, RemoteException {
+		String contextName)
+		throws NotBoundException, RemoteException {
 		try {
-			return (BacksightController) Naming.lookup("rmi://"
-				+ siteAddress
-				+ "/"
-				+ Common.getRemoteObjectName(contextName));
+			return (BacksightController) Naming.lookup(
+				"rmi://"
+					+ siteAddress
+					+ "/"
+					+ Common.getRemoteObjectName(contextName));
 		} catch (MalformedURLException e) {
 			throw new IllegalStateException(e);
 		}

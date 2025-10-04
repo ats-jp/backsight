@@ -41,8 +41,7 @@ public class BacksightFilter implements Filter {
 	}
 
 	@Override
-	public void init(FilterConfig config) throws ServletException {
-	}
+	public void init(FilterConfig config) throws ServletException {}
 
 	@Override
 	public void doFilter(

@@ -45,8 +45,9 @@ public class BacksightNode {
 		XPath xpath = XPathFactory.newInstance().newXPath();
 
 		InputSource input;
-		input = new InputSource(new BufferedInputStream(
-			new FileInputStream(xml)));
+		input = new InputSource(
+			new BufferedInputStream(
+				new FileInputStream(xml)));
 
 		try {
 			Node node = (Node) xpath.evaluate(

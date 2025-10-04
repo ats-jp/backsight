@@ -27,16 +27,18 @@ class LogIterator implements Iterator<String> {
 	private String line;
 
 	LogIterator(File directory, String prefix, Date login, String id) {
-		pattern = Pattern.compile("^[^\\t]+\\t"
-			+ "[^\\t]+\\t"
-			+ "[^\\t]+\\t"
-			+ id
-			+ "\\t");
+		pattern = Pattern.compile(
+			"^[^\\t]+\\t"
+				+ "[^\\t]+\\t"
+				+ "[^\\t]+\\t"
+				+ id
+				+ "\\t");
 
-		final Pattern filePattern = Pattern.compile("^"
-			+ prefix
-			+ "-"
-			+ "(\\d{8}).log$");
+		final Pattern filePattern = Pattern.compile(
+			"^"
+				+ prefix
+				+ "-"
+				+ "(\\d{8}).log$");
 
 		if (directory == null || !directory.isDirectory()) return;
 

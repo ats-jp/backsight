@@ -30,7 +30,8 @@ public abstract class CurrentCountServlet extends HttpServlet {
 	@Override
 	protected void doPost(
 		HttpServletRequest request,
-		HttpServletResponse response) throws ServletException, IOException {
+		HttpServletResponse response)
+		throws ServletException, IOException {
 		String site = request.getParameter("site");
 		String context = request.getParameter("context");
 		BacksightController controller = BacksightClient.getControllerWithoutException(
@@ -50,9 +51,10 @@ public abstract class CurrentCountServlet extends HttpServlet {
 		response.setContentType("text/xml");
 		response.setCharacterEncoding("UTF-8");
 
-		PrintWriter writer = new PrintWriter(new OutputStreamWriter(
-			response.getOutputStream(),
-			"UTF-8"));
+		PrintWriter writer = new PrintWriter(
+			new OutputStreamWriter(
+				response.getOutputStream(),
+				"UTF-8"));
 
 		writer.write(xml);
 		writer.flush();

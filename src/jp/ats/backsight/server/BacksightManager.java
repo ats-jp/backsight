@@ -546,20 +546,17 @@ public class BacksightManager implements HttpSessionListener, Filter {
 
 		try {
 			Naming.unbind(Common.getRemoteObjectName(context.getName()));
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 
 		try {
 			UnicastRemoteObject.unexportObject(context.getController(), true);
-		} catch (NoSuchObjectException e) {
-		}
+		} catch (NoSuchObjectException e) {}
 
 		synchronized (BacksightManager.class) {
 			if (registry != null) {
 				try {
 					UnicastRemoteObject.unexportObject(registry, true);
-				} catch (NoSuchObjectException e) {
-				}
+				} catch (NoSuchObjectException e) {}
 				registry = null;
 			}
 		}

@@ -57,9 +57,10 @@ public class ControlAction implements Action {
 			controller.setConcurrentRequestCount(concurrentRequestCount);
 			controller.setSessionTimeoutMinutes(sessionTimeoutMinutes);
 		} catch (RemoteException e) {
-			throw new ApplicationException("リモート接続で障害が発生しました ["
-				+ e.getMessage()
-				+ "]");
+			throw new ApplicationException(
+				"リモート接続で障害が発生しました ["
+					+ e.getMessage()
+					+ "]");
 		}
 	}
 }

@@ -65,18 +65,20 @@ public class AccessControlServer {
 	private void restartControlServerInternal() {
 		synchronized (lock) {
 			try {
-				server = new Server(new SocketAcceptor(
-					AccessController.address,
-					port,
-					1,
-					1000,
-					1000 * 10), new IOStreamServiceHandlerFactory() {
+				server = new Server(
+					new SocketAcceptor(
+						AccessController.address,
+						port,
+						1,
+						1000,
+						1000 * 10),
+					new IOStreamServiceHandlerFactory() {
 
-					@Override
-					public IOStreamServiceHandler newInstance() {
-						return new AccessControlServiceHandler();
-					}
-				});
+						@Override
+						public IOStreamServiceHandler newInstance() {
+							return new AccessControlServiceHandler();
+						}
+					});
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}
@@ -127,8 +129,9 @@ public class AccessControlServer {
 			PrintWriter writer = null;
 			try {
 				InputStream input = getIOStream().getInputStream();
-				writer = new PrintWriter(new BufferedOutputStream(
-					getIOStream().getOutputStream()));
+				writer = new PrintWriter(
+					new BufferedOutputStream(
+						getIOStream().getOutputStream()));
 				writer.println("サーバに対する指示を選択してください (10秒で切断されます)");
 				writer.println("0:起動状態に復帰");
 				writer.println("1:一時停止");

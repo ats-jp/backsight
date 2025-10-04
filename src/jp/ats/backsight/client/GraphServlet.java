@@ -51,7 +51,8 @@ public class GraphServlet extends HttpServlet {
 	@Override
 	protected void service(
 		HttpServletRequest request,
-		HttpServletResponse response) throws ServletException, IOException {
+		HttpServletResponse response)
+		throws ServletException, IOException {
 		OutputStream out = response.getOutputStream();
 
 		Matcher matcher = pattern.matcher(request.getRequestURI());

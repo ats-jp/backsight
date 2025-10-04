@@ -93,13 +93,16 @@ public class Logger {
 	}
 
 	private void write(List<String> output) throws IOException {
-		File log = new File(directory, prefix
-			+ "-"
-			+ new SimpleDateFormat("yyyyMMdd").format(new Date())
-			+ ".log");
+		File log = new File(
+			directory,
+			prefix
+				+ "-"
+				+ new SimpleDateFormat("yyyyMMdd").format(new Date())
+				+ ".log");
 		log.createNewFile();
-		PrintWriter writer = new PrintWriter(new BufferedOutputStream(
-			new FileOutputStream(log.getAbsolutePath(), true)));
+		PrintWriter writer = new PrintWriter(
+			new BufferedOutputStream(
+				new FileOutputStream(log.getAbsolutePath(), true)));
 		for (String line : output) {
 			writer.println(line);
 		}

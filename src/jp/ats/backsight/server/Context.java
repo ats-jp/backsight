@@ -330,7 +330,7 @@ class Context {
 					formatter,
 					rawCurrentAccessTime
 						+ session.getMaxInactiveInterval()
-						* 1000);
+							* 1000);
 
 				Enumeration<String> enumeration;
 				synchronized (session) {

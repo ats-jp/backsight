@@ -50,9 +50,10 @@ public class Mail {
 		Properties props = new Properties();
 		props.setProperty("mail.smtp.host", smtp);
 		props.setProperty("mail.smtp.auth", "true");
-		message = new MimeMessage(Session.getInstance(
-			props,
-			new SMTPAuthenticator(username, password)));
+		message = new MimeMessage(
+			Session.getInstance(
+				props,
+				new SMTPAuthenticator(username, password)));
 	}
 
 	public Mail(String smtp) {
@@ -95,10 +96,11 @@ public class Mail {
 
 	public void setSubject(String subject) throws MessagingException {
 		try {
-			message.setSubject(MimeUtility.encodeText(
-				CP932.treatForJIS(subject),
-				"iso-2022-jp",
-				"B"));
+			message.setSubject(
+				MimeUtility.encodeText(
+					CP932.treatForJIS(subject),
+					"iso-2022-jp",
+					"B"));
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e.getMessage());
 		}
@@ -166,9 +168,10 @@ public class Mail {
 		MimeBodyPart attach = new MimeBodyPart();
 		DataHandler handler = new DataHandler(attachment);
 		attach.setDataHandler(handler);
-		attach.setFileName(!isAvailable(attachmentName)
-			? attachment.getName()
-			: attachmentName);
+		attach.setFileName(
+			!isAvailable(attachmentName)
+				? attachment.getName()
+				: attachmentName);
 		multi.addBodyPart(attach);
 
 		message.setContent(multi);

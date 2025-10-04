@@ -42,12 +42,21 @@ public class ContextNode {
 				node)
 				.trim()
 				.split(" ");
-			concurrentSessionCount = Integer.parseInt(xpath.evaluate("@"
-				+ concurrentSessionCountAttribute, node));
-			concurrentRequestCount = Integer.parseInt(xpath.evaluate("@"
-				+ concurrentRequestCountAttribute, node));
-			sessionTimeoutMinutes = Integer.parseInt(xpath.evaluate("@"
-				+ sessionTimeoutMinutesAttribute, node));
+			concurrentSessionCount = Integer.parseInt(
+				xpath.evaluate(
+					"@"
+						+ concurrentSessionCountAttribute,
+					node));
+			concurrentRequestCount = Integer.parseInt(
+				xpath.evaluate(
+					"@"
+						+ concurrentRequestCountAttribute,
+					node));
+			sessionTimeoutMinutes = Integer.parseInt(
+				xpath.evaluate(
+					"@"
+						+ sessionTimeoutMinutesAttribute,
+					node));
 		} catch (XPathExpressionException e) {
 			throw new IllegalStateException(e);
 		}
