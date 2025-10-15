@@ -4,7 +4,7 @@
     <workDir>/work</workDir>
     <exportSource>false</exportSource>
     <reloadable>true</reloadable>
-    <redirectLogger>true</redirectLogger>
+    <redirectLogger>false</redirectLogger>
     <updateXml>true</updateXml>
     <warLocation></warLocation>
     <extraInfo></extraInfo>
