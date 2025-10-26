@@ -579,11 +579,6 @@ public class BacksightManager implements HttpSessionListener, Filter {
 			.removeSession(session);
 	}
 
-	@Override
-	protected void finalize() {
-		destroy();
-	}
-
 	private static void sendExceptionMail(
 		HttpServletRequest request,
 		Context context,
