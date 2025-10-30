@@ -180,14 +180,12 @@
 			<url-pattern>*.do</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
-			<role-name>admin</role-name>
-			<role-name>manager</role-name>
+			<role-name>backsight-user</role-name>
 		</auth-constraint>
 	</security-constraint>
 
 	<security-role>
-		<role-name>admin</role-name>
-		<role-name>manager</role-name>
+		<role-name>backsight-user</role-name>
 	</security-role>
 
 	<login-config>
