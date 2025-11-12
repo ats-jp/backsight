@@ -560,6 +560,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 				registry = null;
 			}
 		}
+
+		context.getLogger().destroy();
 	}
 
 	@Override
