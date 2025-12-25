@@ -54,6 +54,8 @@ public class BacksightManager implements HttpSessionListener, Filter {
 
 	private static final Map<Long, LogIterator> currentLogIterators = newHashMap();
 
+	private static final String OVERRIDE_MINUTES_SESSION_KEY = BacksightManager.class.getName() + ".OVERRIDE_MINUTES_SESSION_KEY";
+
 	private static final int defaultLogInterval = 10000;
 
 	private static Registry registry;
@@ -165,6 +167,22 @@ public class BacksightManager implements HttpSessionListener, Filter {
 
 	public static int getCurrentRequestCount(String contextName) {
 		return getContext(contextName).getCurrentRequestCount();
+	}
+
+	public static void overrideSessionTimeoutMinutes(int minutes, HttpSession session) {
+		synchronized (session) {
+			session.setAttribute(OVERRIDE_MINUTES_SESSION_KEY, minutes);
+			session.setMaxInactiveInterval(minutes * 60);
+		}
+	}
+
+	private int sessionTimeoutMinutes(HttpSession session) {
+		synchronized (session) {
+			var minutes = (Integer) session.getAttribute(OVERRIDE_MINUTES_SESSION_KEY);
+			if (minutes != null) return minutes;
+		}
+
+		return context.getTerminal().getSessionTimeoutMinutes();
 	}
 
 	@Override
@@ -398,8 +416,7 @@ public class BacksightManager implements HttpSessionListener, Filter {
 
 		final String sessionID = context.adjustSessionID(session);
 
-		session.setMaxInactiveInterval(
-			context.getTerminal().getSessionTimeoutMinutes() * 60);
+		session.setMaxInactiveInterval(sessionTimeoutMinutes(session) * 60);
 
 		final SessionValues sessionValues = SessionValues.prepare(session);
 

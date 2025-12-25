@@ -9,8 +9,8 @@
 %><%
 BacksightController controller = BacksightClient.getController(session);
 
-long logId = controller.createLogIterator(request.getParameter("id"));
 try {
+	long logId = controller.createLogIterator(request.getParameter("id"));
 	while (controller.hasNextLog(logId)) {
 %><%=controller.nextLog(logId)%>
 <%

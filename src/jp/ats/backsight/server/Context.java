@@ -17,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -39,6 +38,8 @@ class Context {
 	private final String name;
 
 	private final BacksightControllerImpl controller;
+
+	private final Object lock = new Object();
 
 	private final Map<String, SessionContainer> sessions = newHashMap();
 
@@ -96,15 +97,18 @@ class Context {
 	}
 
 	Object getSessionLockKey(String sessionID) {
-		synchronized (sessions) {
+		synchronized (lock) {
+			cleanupWithoutSynchronized();
+
 			return sessions.get(sessionID);
 		}
 	}
 
 	//Tomcatのsession fixation対策で、セッションIDが切り替わる仕様に対応
 	String adjustSessionID(HttpSession session) {
-		//セッションID切り替え処理全体をロックするため、ロックをsessionsで行う
-		synchronized (sessions) {
+		synchronized (lock) {
+			cleanupWithoutSynchronized();
+
 			String originalSessionID = (String) session.getAttribute(originalSessionIDKey);
 			String currentSessionID = session.getId();
 
@@ -115,8 +119,7 @@ class Context {
 			SessionContainer container = sessions.remove(originalSessionID);
 
 			if (container != null) {
-				container.changeID(currentSessionID);
-				sessions.put(currentSessionID, container);
+				sessions.put(currentSessionID, new SessionContainer(session));
 			}
 
 			return currentSessionID;
@@ -124,16 +127,19 @@ class Context {
 	}
 
 	boolean hasSession(String sessionID) {
-		synchronized (sessions) {
+		synchronized (lock) {
+			cleanupWithoutSynchronized();
+
 			return sessions.containsKey(sessionID);
 		}
 	}
 
 	boolean addSession(HttpSession session) {
 		int concurrentSessionCount = terminal.getConcurrentSessionCount();
-		synchronized (sessions) {
-			if (concurrentSessionCount > 0
-				&& sessions.size() >= concurrentSessionCount) return false;
+		synchronized (lock) {
+			cleanupWithoutSynchronized();
+
+			if (concurrentSessionCount > 0 && sessions.size() >= concurrentSessionCount) return false;
 
 			String sessionID = session.getId();
 
@@ -145,6 +151,30 @@ class Context {
 		return true;
 	}
 
+	private void cleanupWithoutSynchronized() {
+		//ConcurrentModificationExceptionを発生させない
+		var keys = new LinkedList<>(sessions.keySet());
+
+		keys.forEach(id -> {
+			var container = sessions.get(id);
+
+			if (container != null) {
+				container.checkAndClearIfUnavailable();
+			}
+
+			var entries = new LinkedList<>(userSessionCountChecker.getInnerMap().entrySet());
+
+			entries.forEach(entry -> {
+				Set<String> userSessions = (Set<String>) entry.getValue();
+				if (userSessions.remove(id)) {
+					if (userSessions.size() == 0) userSessionCountChecker.remove(entry.getKey());
+
+					return;
+				}
+			});
+		});
+	}
+
 	boolean checkOneUserSessionCount(
 		String user,
 		String sessionID,
@@ -153,7 +183,7 @@ class Context {
 		//同じセッションで今度はログインされた場合、ユーザーなしとありで
 		//同じセッションが存在することになってしまう
 		if (!isAvailable(user)) return false;
-		synchronized (userSessionCountChecker) {
+		synchronized (lock) {
 			Set<String> sessions = (Set<String>) userSessionCountChecker.get(user);
 
 			if (sessions.contains(sessionID)) {
@@ -171,41 +201,38 @@ class Context {
 
 	void removeSession(HttpSession session) {
 		String sessionID = session.getId();
-		synchronized (sessions) {
+		synchronized (lock) {
 			sessions.remove(sessionID);
-		}
 
-		synchronized (userSessionCountChecker) {
-			for (Entry<String, Collection<String>> entry : userSessionCountChecker.getInnerMap()
-				.entrySet()) {
-				Set<String> userSessions = (Set<String>) entry.getValue();
-				if (userSessions.remove(sessionID)) {
-					if (userSessions.size() == 0) userSessionCountChecker.remove(entry.getKey());
-					break;
-				}
-			}
+			cleanupWithoutSynchronized();
 		}
 	}
 
 	HttpSession getSession(String sessionID) {
-		synchronized (sessions) {
+		synchronized (lock) {
+			cleanupWithoutSynchronized();
+
 			SessionContainer container = sessions.get(sessionID);
 			return container == null ? null : container.getSession();
 		}
 	}
 
 	void invalidateSession(String sessionID) {
-		synchronized (sessions) {
+		synchronized (lock) {
 			SessionContainer container = sessions.get(sessionID);
 			if (container == null) return;
 			container.invalidate();
 			sessions.remove(sessionID);
+
+			cleanupWithoutSynchronized();
 		}
 	}
 
 	SessionInfo[] getSessions() {
 		List<SessionContainer> containers;
-		synchronized (sessions) {
+		synchronized (lock) {
+			cleanupWithoutSynchronized();
+
 			containers = new LinkedList<SessionContainer>(sessions.values());
 		}
 
@@ -220,7 +247,9 @@ class Context {
 	}
 
 	int getSessionCount() {
-		synchronized (sessions) {
+		synchronized (lock) {
+			cleanupWithoutSynchronized();
+
 			return sessions.size();
 		}
 	}
@@ -274,7 +303,7 @@ class Context {
 
 	public class SessionContainer implements Comparable<SessionContainer> {
 
-		private String id;
+		private final String id;
 
 		private final WeakReference<HttpSession> sessionReference;
 
@@ -372,10 +401,6 @@ class Context {
 			return logger.getPrefix();
 		}
 
-		private synchronized void changeID(String newID) {
-			id = newID;
-		}
-
 		private synchronized String id() {
 			return id;
 		}
@@ -383,12 +408,21 @@ class Context {
 		private HttpSession getSession() {
 			HttpSession session = sessionReference.get();
 			if (session == null) {
-				synchronized (sessions) {
+				synchronized (lock) {
 					sessions.remove(id());
 				}
 				throw new IllegalStateException();
 			}
 			return session;
+		}
+
+		private void checkAndClearIfUnavailable() {
+			HttpSession session = sessionReference.get();
+			if (session == null) {
+				synchronized (lock) {
+					sessions.remove(id());
+				}
+			}
 		}
 
 		private synchronized long getOrder() {
